@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>相続税簡易計算ツール</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        label { display: block; margin: 10px 0 5px; }
+        input { padding: 8px; width: 100%; margin-bottom: 15px; }
+        button { padding: 10px 20px; background: #007BFF; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        #result { margin-top: 20px; font-size: 1.2em; color: #333; }
+    </style>
+</head>
+<body>
+    <h1>相続税簡易計算ツール</h1>
+    <p>相続財産の合計額と法定相続人の人数を入力して、「計算する」をクリックしてください。</p>
+
+    <label for="totalAssets">被相続人の総資産額（円）</label>
+    <input type="number" id="totalAssets" placeholder="例: 100000000">
+
+    <label for="heirs">法定相続人の人数</label>
+    <input type="number" id="heirs" placeholder="例: 3">
+
+    <button onclick="calculateTax()">計算する</button>
+
+    <div id="result"></div>
+
+    <script>
+        function calculateTax() {
+            const totalAssets = parseFloat(document.getElementById('totalAssets').value);
+            const heirs = parseInt(document.getElementById('heirs').value);
+
+            if (isNaN(totalAssets) || isNaN(heirs) || totalAssets <= 0 || heirs <= 0) {
+                document.getElementById('result').innerText = "正しい値を入力してください。";
+                return;
+            }
+
+            // 基礎控除額
+            const basicDeduction = 30000000 + 6000000 * heirs;
+
+            // 課税価格
+            const taxableAssets = totalAssets - basicDeduction;
+
+            // 相続税計算
+            let inheritanceTax = 0;
+            if (taxableAssets > 0) {
+                inheritanceTax = taxableAssets * 0.15; // 仮に15%の税率を適用
+            }
+
+            document.getElementById('result').innerHTML = `
+                <p>基礎控除額: ¥${basicDeduction.toLocaleString()}</p>
+                <p>課税価格: ¥${(taxableAssets > 0 ? taxableAssets : 0).toLocaleString()}</p>
+                <p>概算相続税額: ¥${inheritanceTax.toLocaleString()}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
